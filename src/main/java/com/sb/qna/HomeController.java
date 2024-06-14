@@ -2,6 +2,7 @@ package com.sb.qna;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -135,7 +136,7 @@ public class HomeController {
     // @PathVariable 를 활용해 파라미터값을 / 다음에 바로 주어도 읽는다.
     // http://localhost:8080/mbti?name=홍길동
     // http://localhost:8080/mbti/홍길동   (이렇게 쓸 수 있음)
-    public String showMbti(@PathVariable("name") String name) {
+    public String showMbti(@PathVariable String name) {
         return switch (name) {
             case "홍길동" -> {
                 char j = 'J';
@@ -145,5 +146,24 @@ public class HomeController {
             case "임꺽정", "신짱구" -> "ESFJ";
             default -> "모름";
         };
+    }
+
+    @GetMapping("/saveSessionAge/{name}/{value}")
+    @ResponseBody
+    public String saveSession(@PathVariable String name, @PathVariable String value, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+
+        // req => 쿠키 => JSESSIONID => 섹션을 얻을 수 있다.
+        session.setAttribute(name, value);
+
+        return "세션변수의 %s의 값이 %s(으)로 설정되었습니다.".formatted(name, value);
+    }
+
+    @GetMapping("/getSession/{name}")
+    @ResponseBody
+    public String getSession(@PathVariable String name, HttpSession session) {
+        String value = (String) session.getAttribute(name);
+
+        return "세션변수의 %s의 값이 %s입니다.".formatted(name, value);
     }
 }
