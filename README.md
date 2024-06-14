@@ -1,2 +1,2 @@
-# QnA-Service
-SpringBoot 활용 QnA 서비스
+# QnA_Service
+SpringBoot 활용한 QnA 서비스
