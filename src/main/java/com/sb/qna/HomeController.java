@@ -136,14 +136,14 @@ public class HomeController {
     // http://localhost:8080/mbti?name=홍길동
     // http://localhost:8080/mbti/홍길동   (이렇게 쓸 수 있음)
     public String showMbti(@PathVariable("name") String name) {
-        String rs = switch (name) {
-            case "홍길동" -> "INFP";
+        return switch (name) {
+            case "홍길동" -> {
+                char j = 'J';
+                yield "INF" + j;
+            }
             case "홍길순" -> "ENFP";
-            case "임꺽정" -> "ESFJ";
-            case "신짱구" -> "ENTP";
+            case "임꺽정", "신짱구" -> "ESFJ";
             default -> "모름";
         };
-
-        return rs;
     }
 }
