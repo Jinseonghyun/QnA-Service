@@ -6,6 +6,12 @@ import org.springframework.web.bind.annotation.*;
 // @Controller : 스프링부트한테 해당 클래스는 컬트롤러 역할이라고 알려준다.
 @Controller
 public class HomeController {
+    private int increaseNo = 0;
+
+    public HomeController() {
+        increaseNo = -1;
+    }
+
     @RequestMapping("/qna")
     @ResponseBody
     public String showHome() {
@@ -44,12 +50,22 @@ public class HomeController {
                 """.formatted(age);
     }
 
-    @PostMapping("/page2")
+    @GetMapping("/plus")
     @ResponseBody
-    public String showPage2Post(@RequestParam(defaultValue = "0") int age) {
-        return """
-                <h1>입력된 나이 : %d</h1>
-                <h1>안녕하세요. POST 방식으로 오신걸 환영합니다.</h1>
-                """.formatted(age);
+    public int showplus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+        return a + b;
+    }
+
+    @GetMapping("/minus")
+    @ResponseBody
+    public int showminus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+        return a - b;
+    }
+
+    @GetMapping("/increase")
+    @ResponseBody
+    public int showIncrease() {
+        increaseNo++;
+        return increaseNo;
     }
 }
