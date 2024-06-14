@@ -1,8 +1,11 @@
 package com.sb.qna;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,6 +59,14 @@ public class HomeController {
     @GetMapping("/plus")
     @ResponseBody
     public int showplus(@RequestParam(defaultValue = "0") int a, @RequestParam(defaultValue = "0") int b) {
+        return a + b;
+    }
+
+    @GetMapping("/plus2")
+    @ResponseBody
+    public int showplus2(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int a = Integer.parseInt(req.getParameter("a"));
+        int b = Integer.parseInt(req.getParameter("b"));
         return a + b;
     }
 
