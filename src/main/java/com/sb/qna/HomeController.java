@@ -87,7 +87,7 @@ public class HomeController {
     @ResponseBody
     // Integer 는 객체로 null 값을 허용한다.
     public String showGugudan(Integer dan, Integer limit) {
-        if(dan == null) {
+        if (dan == null) {
             dan = 9;
         }
 
@@ -97,7 +97,7 @@ public class HomeController {
 
         String gugudanFormat = "";
 
-        for(int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 9; i++) {
             gugudanFormat += "%d * %d = %d<br>".formatted(dan, i, dan * i);
         }
 
@@ -108,7 +108,7 @@ public class HomeController {
     @ResponseBody
     // Integer 는 객체로 null 값을 허용한다.
     public String showGugudan2(Integer dan, Integer limit) {
-        if(dan == null) {
+        if (dan == null) {
             dan = 9;
         }
 
@@ -118,14 +118,32 @@ public class HomeController {
 
         String gugudanFormat = "";
 
-        for(int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 9; i++) {
             gugudanFormat += "%d * %d = %d<br>".formatted(dan, i, dan * i);
         }
 
         // final 수식어가 붙으면 해당 변수는 상수처리 된다.
         final Integer finalDan = dan;
         return IntStream.rangeClosed(1, limit)
-                .mapToObj(i-> "%d * %d = %d".formatted(finalDan, i, finalDan * i))
+                .mapToObj(i -> "%d * %d = %d".formatted(finalDan, i, finalDan * i))
                 .collect(Collectors.joining("<br>"));
+    }
+
+    @GetMapping("/mbti/{name}")
+    @ResponseBody
+    // URL 을 적고 그 다음 ? 을 기준으로 파라미터 작성
+    // @PathVariable 를 활용해 파라미터값을 / 다음에 바로 주어도 읽는다.
+    // http://localhost:8080/mbti?name=홍길동
+    // http://localhost:8080/mbti/홍길동   (이렇게 쓸 수 있음)
+    public String showMbti(@PathVariable("name") String name) {
+        String rs = switch (name) {
+            case "홍길동" -> "INFP";
+            case "홍길순" -> "ENFP";
+            case "임꺽정" -> "ESFJ";
+            case "신짱구" -> "ENTP";
+            default -> "모름";
+        };
+
+        return rs;
     }
 }
