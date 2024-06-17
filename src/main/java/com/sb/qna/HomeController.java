@@ -19,9 +19,11 @@ import java.util.stream.IntStream;
 @Controller
 public class HomeController {
     private int increaseNo = 0;
+    private List<Article> articles;
 
     public HomeController() {
         increaseNo = -1;
+        articles = new ArrayList<>();
     }
 
     @RequestMapping("/qna")
@@ -303,6 +305,26 @@ public class HomeController {
 
         return list;
     }
+
+    @GetMapping("/addArticle")
+    @ResponseBody
+    public String addArticle(String title, String body) {
+        int id = 1;
+        Article article = new Article(title, body);
+
+        System.out.println(article);
+
+        articles.add(article);
+
+        return "%d번 게시물이 추가되었습니다.".formatted(article.getId());
+    }
+
+    // 게시글 전체
+    @GetMapping("/article/list")
+    @ResponseBody
+    public List<Article> getArticles() {
+        return articles;
+    }
 }
 
 class Animal {
@@ -353,6 +375,30 @@ class AnimalV2 {
     private final int age;
     private  String name;
     private final List<Integer> related;
-
 }
+
+@AllArgsConstructor
+@Getter
+@ToString
+class Article {
+    private static int lastId;
+    private final int id;
+    private final String title;
+    private final String body;
+
+    static {
+        lastId = 0;
+    }
+
+    public Article(String title, String body) {
+        this(++lastId, title, body); // 메서드 오버로딩
+    }
+// AllArgsConstructor 으로 대체
+//    public Article(int id, String title, String body) {
+//        this.id = id;
+//        this.title = title;
+//        this.body = body;
+//    }
+}
+
 
