@@ -319,11 +319,21 @@ public class HomeController {
         return "%d번 게시물이 추가되었습니다.".formatted(article.getId());
     }
 
-    // 게시글 전체
     @GetMapping("/article/list")
     @ResponseBody
     public List<Article> getArticles() {
         return articles;
+    }
+
+    @GetMapping("/article/detail/{id}")
+    @ResponseBody
+    public Article getArticles(@PathVariable int id) {
+        Article article = articles.stream()
+                .filter(a -> a.getId() == id) // 게시물 id 와 내가 입력한 id가 일치한지 확인
+                .findFirst()
+                .orElse(null); // 입력한 번호의 게시물이 없으면 null 반환
+
+        return article;
     }
 }
 
