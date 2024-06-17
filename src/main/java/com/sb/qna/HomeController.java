@@ -369,6 +369,23 @@ public class HomeController {
 
         return "%d번 게시물을 수정하였습니다.".formatted(article.getId());
     }
+
+    @GetMapping("/article/delete/{id}")
+    @ResponseBody
+    public String deleteArticle(@PathVariable int id) {
+        Article article = articles.stream()
+                .filter(a -> a.getId() == id) // 게시물 id 와 내가 입력한 id가 일치한지 확인
+                .findFirst()
+                .orElse(null); // 입력한 번호의 게시물이 없으면 null 반환
+
+        if (article == null) {
+            return "d번 게시물이 존재하지 않습니다.".formatted(id);
+        }
+
+        articles.remove(article);
+
+        return "%d번 게시물을 삭제하였습니다.".formatted(id);
+    }
 }
 
 class Animal {
