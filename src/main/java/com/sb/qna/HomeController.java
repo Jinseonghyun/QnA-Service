@@ -397,7 +397,7 @@ public class HomeController {
 
     @GetMapping("/addPerson/{id}")
     @ResponseBody
-    public Person addPerson(Person p) {
+    public Person addPerson(Person p  ) {
         return p;
     }
 }
@@ -479,9 +479,16 @@ class Article {
 }
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 class Person {
     private int id;
     private int age;
     private String name;
+
+    public Person(int age, String name) {
+        this.age = age;
+        this.name = name;
+    }
 }
