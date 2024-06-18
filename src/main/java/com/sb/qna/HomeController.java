@@ -336,6 +336,17 @@ public class HomeController {
                 .findFirst()
                 .orElse(null); // 입력한 번호의 게시물이 없으면 null 반환
 
+/*
+// 위의 stream 으로 작성한 코드와 동일한 코드
+       Article article1 = null;
+        for (Article a : articles) {
+            if (a.getId() == id) {
+                article1 = a;
+                break;
+            }
+        }
+*/
+
         if (article == null) {
             return "d번 게시물이 존재하지 않습니다.".formatted(id);
         }
