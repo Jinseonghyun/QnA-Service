@@ -19,5 +19,5 @@ public class Question {
     private String content;
 
 
-    private LocalDateTime createDate; // 생성 날짜
+    private LocalDateTime createDate; // 생성 날짜 Datetime
 }
