@@ -3,6 +3,7 @@ package com.sb.qna;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity // 아래 Question 클래스는 엔티티 클래스이다.
 // 아래 클래스와 1:1 로 매칭되는 테이블이 DB에 없다면, 자동으로 생성되어야 한다.
@@ -18,6 +19,9 @@ public class Question {
     @Column(columnDefinition = "TEXT") // 본문이 많기 때문에 TEXT
     private String content;
 
-
     private LocalDateTime createDate; // 생성 날짜 Datetime
+
+    // 하나의 질문에 여러개 답변
+    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) // cascade 이용해서 질문이 지워지면 아래에 답변도 다 지워지도록
+    private List<Answer> answerList; // 위의 cascade 때문에 answerList가 안생김  (빈 리스트가 들어간다.)
 }
