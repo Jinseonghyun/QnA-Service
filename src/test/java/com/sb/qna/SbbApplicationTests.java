@@ -49,4 +49,10 @@ public class SbbApplicationTests {
         Question q = all.get(0); // 위에서 받은 것 중 첫 번째 받은거
         assertEquals("sbb가 무엇인가요?", q.getSubject());
     }
+
+    @Test
+    void testJpa3() {
+        Question q = questionRepository.findBySubject("sbb가 무엇인가요?");
+        assertEquals(1, q.getId()); // findBySubject로 제목을 한개만 가져오겠다.
+    }
 }
