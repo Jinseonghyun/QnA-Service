@@ -6,9 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class SbbApplicationTests {
@@ -67,5 +69,20 @@ public class SbbApplicationTests {
         List<Question> qList = questionRepository.findBySubjectLike("sbb%"); // sbb로 시작하는 애들 다 가져와
         Question q = qList.get(0);
         assertEquals("sbb가 무엇인가요?", q.getSubject());
+    }
+
+    @Test             // null  값을 안전하게 처리하기 위한 방식
+    void testJpa6() { // Optional 은 null 값을 가지고 감싸고 있는 래퍼클래스
+        Optional<Question> oq = questionRepository.findById(1); // jpa가 제공하는 메서드 findById
+//        Question q = oq.orElse(null);  이 코드를 아래 isPresent로 해결
+        assertTrue(oq.isPresent()); //  isPresent는 ! = null   과 같다.
+        Question q = oq.get();
+        q.setSubject("수정된 제목");
+        questionRepository.save(q);
+
+        // findById(1) 해당 녀석이 있으면 위에서 업데이트가 일어나고 아래에서 또 수정이 일어난다.
+        Question q2 = questionRepository.findById(1).get();
+        q2.setSubject("Hi");
+        questionRepository.save(q2); // insert
     }
 }
