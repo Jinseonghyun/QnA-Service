@@ -23,7 +23,7 @@ public class SbbApplicationTests {
     }
 
     @Test
-    void testJpa() {
+    void testJpa() { // 데이터 생성
         Question q1 = new Question();
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
@@ -60,7 +60,7 @@ public class SbbApplicationTests {
         // 쿼리문의 where 절에 조건에 대해서
     @Test // findBySubjectAndContent (여러 칼럼을 AND 로 검색), findBySubjectOrContent (여러 칼럼을 OR로 검색)
     void testJpa4() { // 쿼리문에서 where 뒤에 조건에 "sbb가 무엇인가요?" 넣는 것과 같다. JPA 가 해준다. (내용 자체를 객체에 리턴)
-        Question q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "id는 자동으로 생성되나요?");
+        Question q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.");
         assertEquals(1, q.getId()); // findBySubject로 제목을 한개만 가져오겠다.
     }
 
@@ -79,6 +79,7 @@ public class SbbApplicationTests {
         Question q = oq.get();
         q.setSubject("수정된 제목");
         questionRepository.save(q);
+        // 기존 id가 존재하면 해당 코드는 update를 실행한다.
 
         // findById(1) 해당 녀석이 있으면 위에서 업데이트가 일어나고 아래에서 또 수정이 일어난다.
         Question q2 = questionRepository.findById(1).get();
@@ -94,6 +95,12 @@ public class SbbApplicationTests {
         Question q = oq.get(); // 아니라면 값 가져와서 참조값에 넣는다.
         questionRepository.delete(q); // 위에서 가져왔으니까 리포지토리에서 삭제 -> 질문의 개수가 1개 줄어든다.
         assertEquals(1, questionRepository.count()); // 질문의 개수 2개에서 1개가 됨
-        
+
+        /*  지금까지 위의 코드 문제점
+        - 기존 테스트 코드는 유연나지 않음
+        - 처음 데이터 생성 id는 차례대로 1번, 2번
+        - 그 다음 또 테스트 생성시 3, 4번 id 가 생김
+        - 1, 2번 데이터가 삭제 되게 되면 수정이나 삭제 코드를 사용할 수 없는 문제가 발생!
+        */
     }
 }
