@@ -11,6 +11,16 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     @Transactional // 삭제하는 거기에 붙이는게 좋다.
     @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
+    @Query(value = "SET FOREIGN_KEY_CHECKS = 0", nativeQuery = true) // SET FOREIGN_KEY_CHECKS = 0 외래키 비활성화
+    void disableForeignKeyChecks();
+
+    @Transactional // 삭제하는 거기에 붙이는게 좋다.
+    @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
+    @Query(value = "SET FOREIGN_KEY_CHECKS = 1", nativeQuery = true)  // SET FOREIGN_KEY_CHECKS = 1 외래키 활성화
+    void enableForeignKeyChecks();
+
+    @Transactional // 삭제하는 거기에 붙이는게 좋다.
+    @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
     @Query(value = "truncate question", nativeQuery = true)
     void truncate();
 
@@ -22,6 +32,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     // 조회할거야
     List<Question> findBySubjectLike(String subject);
+
 }
 
 

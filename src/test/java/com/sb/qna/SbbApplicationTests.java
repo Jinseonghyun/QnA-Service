@@ -37,7 +37,9 @@ public class SbbApplicationTests {
         q2.setCreateDate(LocalDateTime.now());
         questionRepository.save(q2);  // 두번째 질문 저장
 
-        questionRepository.truncate(); // 삭제해준다.
+        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
+        questionRepository.truncate(); // truncate 를 화룡ㅇ해 데이터 삭제해준다.
+        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
     }
 
     @Test
