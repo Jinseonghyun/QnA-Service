@@ -55,10 +55,17 @@ public class SbbApplicationTests {
         Question q = questionRepository.findBySubject("sbb가 무엇인가요?");
         assertEquals(1, q.getId()); // findBySubject로 제목을 한개만 가져오겠다.
     }
+        // 쿼리문의 where 절에 조건에 대해서
+    @Test // findBySubjectAndContent (여러 칼럼을 AND 로 검색), findBySubjectOrContent (여러 칼럼을 OR로 검색)
+    void testJpa4() { // 쿼리문에서 where 뒤에 조건에 "sbb가 무엇인가요?" 넣는 것과 같다. JPA 가 해준다. (내용 자체를 객체에 리턴)
+        Question q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "id는 자동으로 생성되나요?");
+        assertEquals(1, q.getId()); // findBySubject로 제목을 한개만 가져오겠다.
+    }
 
     @Test
-    void testJpa4() { // 쿼리문에서 where 뒤에 조건에 "sbb가 무엇인가요?" 넣는 것과 같다. JPA 가 해준다. (내용 자체를 객체에 리턴)
-        Question q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.");
-        assertEquals(1, q.getId()); // findBySubject로 제목을 한개만 가져오겠다.
+    void testJpa5() {
+        List<Question> qList = questionRepository.findBySubjectLike("sbb%"); // sbb로 시작하는 애들 다 가져와
+        Question q = qList.get(0);
+        assertEquals("sbb가 무엇인가요?", q.getSubject());
     }
 }
