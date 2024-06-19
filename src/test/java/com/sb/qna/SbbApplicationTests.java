@@ -85,4 +85,15 @@ public class SbbApplicationTests {
         q2.setSubject("Hi");
         questionRepository.save(q2); // insert
     }
+
+    @Test
+    void testJpa7() {
+        assertEquals(2, questionRepository.count()); // 현재 질문이 2개있다.
+        Optional<Question> oq = questionRepository.findById(1); // 1번 게시물을 찾아서 0oq 에 값 반환
+        assertTrue(oq.isPresent()); // 값이 null 인지 확인
+        Question q = oq.get(); // 아니라면 값 가져와서 참조값에 넣는다.
+        questionRepository.delete(q); // 위에서 가져왔으니까 리포지토리에서 삭제 -> 질문의 개수가 1개 줄어든다.
+        assertEquals(1, questionRepository.count()); // 질문의 개수 2개에서 1개가 됨
+        
+    }
 }
