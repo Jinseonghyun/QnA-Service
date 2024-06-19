@@ -23,18 +23,36 @@ public class SbbApplicationTests {
     }
 
     @Test
-    void testJpa() { // 데이터 생성
+    void testJpa0() {
+
         Question q1 = new Question();
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
         q1.setCreateDate(LocalDateTime.now());
-        this.questionRepository.save(q1);  // 첫번째 질문 저장
+        questionRepository.save(q1);  // 첫번째 질문 저장
 
         Question q2 = new Question();
         q2.setSubject("스프링부트 모델 질문입니다.");
         q2.setContent("id는 자동으로 생성되나요?");
         q2.setCreateDate(LocalDateTime.now());
-        this.questionRepository.save(q2);  // 두번째 질문 저장
+        questionRepository.save(q2);  // 두번째 질문 저장
+
+        questionRepository.truncate(); // 삭제해준다.
+    }
+
+    @Test
+    void testJpa1() { // 데이터 생성
+        Question q1 = new Question();
+        q1.setSubject("sbb가 무엇인가요?");
+        q1.setContent("sbb에 대해서 알고 싶습니다.");
+        q1.setCreateDate(LocalDateTime.now());
+        questionRepository.save(q1);  // 첫번째 질문 저장
+
+        Question q2 = new Question();
+        q2.setSubject("스프링부트 모델 질문입니다.");
+        q2.setContent("id는 자동으로 생성되나요?");
+        q2.setCreateDate(LocalDateTime.now());
+        questionRepository.save(q2);  // 두번째 질문 저장
 
         // id는 최소 0번보다 크다.
         assertThat(q1.getId()).isGreaterThan(0);
