@@ -1,30 +1,39 @@
 package com.sb.qna;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class SbbApplicationTests {
+public class QuestionRepositoryTests {
 
     @Autowired
     private QuestionRepository questionRepository;
+    private static int lastSampleDataId; // 마지막 테스트 데이터 id 가져오기 위해
 
     @Test
     void contextLoads() {
     }
 
-    @Test
-    void testJpa0() {
+    @BeforeEach // 모든 테스트의 전에 계속 반복해서 실행됨
+    void beforeEach() {
+        clearData();  // 데이터 정리
+        createSampleData(); // 매번 샘플 데이터를 만든다.
+    }
 
+    private void clearData() {
+        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
+        questionRepository.truncate(); // truncate 를 활용해 데이터 삭제해준다.
+        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
+    }
+
+    private void createSampleData() {  // 1, 2번 게시물 생성
         Question q1 = new Question();
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
@@ -37,11 +46,39 @@ public class SbbApplicationTests {
         q2.setCreateDate(LocalDateTime.now());
         questionRepository.save(q2);  // 두번째 질문 저장
 
-        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
-        questionRepository.truncate(); // truncate 를 활용해 데이터 삭제해준다.
-        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
+        lastSampleDataId = q2.getId();
     }
 
+    @Test
+    void 저장() { // 위에서 게시물 1, 2번 만들고 여기서 3, 4 번 만듬
+        Question q1 = new Question();
+        q1.setSubject("sbb가 무엇인가요?");
+        q1.setContent("sbb에 대해서 알고 싶습니다.");
+        q1.setCreateDate(LocalDateTime.now());
+        questionRepository.save(q1);  // 첫번째 질문 저장
+
+        Question q2 = new Question();
+        q2.setSubject("스프링부트 모델 질문입니다.");
+        q2.setContent("id는 자동으로 생성되나요?");
+        q2.setCreateDate(LocalDateTime.now());
+        questionRepository.save(q2);  // 두번째 질문 저장
+
+        assertThat(q1.getId()).isEqualTo(lastSampleDataId + 1); // 3번 게시물 확인
+        assertThat(q2.getId()).isEqualTo(lastSampleDataId + 2); // 4번 게시물 확인
+
+    }
+
+    @Test
+    void 삭제() {
+        assertThat(questionRepository.count()).isEqualTo(lastSampleDataId); // 전체 게시물의 수를 센다. 그게 마지막 아이디와 같은지
+
+        Question q = questionRepository.findById(1).get(); // 위의 코드 특성상 일관성을 믿고 1번 게시물은 무조건 존재하겠구나
+        questionRepository.delete(q); // 위에서 가져왔으니까 리포지토리에서 삭제 -> 질문의 개수가 1개 줄어든다.
+
+        assertEquals(1, questionRepository.count()); // 질문의 개수가 1개 줄어든다.
+    }
+
+    /*
     @Test
     void testJpa1() { // 데이터 생성
         Question q1 = new Question();
@@ -116,11 +153,12 @@ public class SbbApplicationTests {
         questionRepository.delete(q); // 위에서 가져왔으니까 리포지토리에서 삭제 -> 질문의 개수가 1개 줄어든다.
         assertEquals(1, questionRepository.count()); // 질문의 개수 2개에서 1개가 됨
 
-        /*  지금까지 위의 코드 문제점
+        *//*  지금까지 위의 코드 문제점
         - 기존 테스트 코드는 유연나지 않음
         - 처음 데이터 생성 id는 차례대로 1번, 2번
         - 그 다음 또 테스트 생성시 3, 4번 id 가 생김
         - 1, 2번 데이터가 삭제 되게 되면 수정이나 삭제 코드를 사용할 수 없는 문제가 발생!
-        */
+        *//*
     }
+    */
 }
