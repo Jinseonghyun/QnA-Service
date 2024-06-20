@@ -37,9 +37,7 @@ public class QuestionRepositoryTests {
 
     // 외부에서 호출 (밖에서 사용할 수 있게 public) (질문 리셋)
     public static void clearData(QuestionRepository questionRepository) { // 변수 questionRepository가 static 아니기에 직접 매개변수로 전달
-        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
-        questionRepository.truncate(); // truncate 를 활용해 데이터 삭제해준다.
-        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
+        questionRepository.truncate();
     }
 
     // 외부에서 호출  (질문 2개 만들고) (샘플 데이터 2개 제작)
