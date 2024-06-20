@@ -7,21 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface QuestionRepository extends JpaRepository<Question, Integer> {
+public interface QuestionRepository extends JpaRepository<Question, Integer>, RepositcoryUtil{
 
     @Transactional // 삭제하는 거기에 붙이는게 좋다.
     @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
-    @Query(value = "SET FOREIGN_KEY_CHECKS = 0", nativeQuery = true) // SET FOREIGN_KEY_CHECKS = 0 외래키 비활성화
-    void disableForeignKeyChecks();
-
-    @Transactional // 삭제하는 거기에 붙이는게 좋다.
-    @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
-    @Query(value = "SET FOREIGN_KEY_CHECKS = 1", nativeQuery = true)  // SET FOREIGN_KEY_CHECKS = 1 외래키 활성화
-    void enableForeignKeyChecks();
-
-    @Transactional // 삭제하는 거기에 붙이는게 좋다.
-    @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
-    @Query(value = "truncate question", nativeQuery = true)
+    @Query(value = "TRUNCATE question", nativeQuery = true)
     void truncate();
 
     // 제목이 필요해
