@@ -11,8 +11,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer>, Re
 
     @Transactional // 삭제하는 거기에 붙이는게 좋다.
     @Modifying // 스프링 부트한테 수정에 관련된 거라는 걸 알려준다.
-    @Query(value = "TRUNCATE question", nativeQuery = true)
-    void truncate();
+    @Query(value = "ALTER TABLE question AUTO_INCREMENT = 1", nativeQuery = true) // 생성되는 게시물 번호를 1로 해라
+    void truncate(); //데이터가 삭제되고 이후에 데이터가 추가되면 데이터를 1번부터 나오게 할려고
 
     // 제목이 필요해
     Question findBySubject(String subject); // findBySubject 간단하게 명시만 해주면 사용가능

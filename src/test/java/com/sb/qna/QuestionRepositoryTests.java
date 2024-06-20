@@ -37,7 +37,9 @@ public class QuestionRepositoryTests {
 
     // 외부에서 호출 (밖에서 사용할 수 있게 public) (질문 리셋)
     public static void clearData(QuestionRepository questionRepository) { // 변수 questionRepository가 static 아니기에 직접 매개변수로 전달
-        questionRepository.truncateTable();
+        questionRepository.deleteAll();   // 지워도 흔적이 남은 (데이터 재생성 하면 번호가 밀림)
+        questionRepository.truncateTable(); // 똑같이 지우는 건데 흔적이 안남는다.
+
     }
 
     // 외부에서 호출  (질문 2개 만들고) (샘플 데이터 2개 제작)

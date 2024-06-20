@@ -17,9 +17,9 @@ public interface RepositcoryUtil {
 
     // default 메서드를 구현하면 인터페이스 내에 구상 메서드를 정의하는게 가능하다.
     default void truncateTable()  { // default 로 메서드 만든다. truncate 중복 되있다. 없애주기 위해
-        disableForeignKeyChecks();
-        truncate();
-        enableForeignKeyChecks();
+//        disableForeignKeyChecks();
+        truncate();  //truncate 가 되려면 외래키가 꺼져 있어야 한다.
+//        enableForeignKeyChecks();
     }
 
     void truncate();
