@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest // TDD 코드들이 독릭접으로 정상 작동을 해야한다.
 public class QuestionRepositoryTests {
 
     @Autowired
@@ -46,7 +46,7 @@ public class QuestionRepositoryTests {
         q2.setCreateDate(LocalDateTime.now());
         questionRepository.save(q2);  // 두번째 질문 저장
 
-        lastSampleDataId = q2.getId();
+        lastSampleDataId = q2.getId(); // 2개에 대해서 id를 담고 있기에 항상 2개이다.
     }
 
     @Test
@@ -69,13 +69,56 @@ public class QuestionRepositoryTests {
     }
 
     @Test
-    void 삭제() {
+    void 수정() {
+        assertThat(questionRepository.count()).isEqualTo(lastSampleDataId); // 전체 게시물의 수를 센다. 그게 마지막 아이디와 같은지
+
+        Question q = questionRepository.findById(1).get(); // 값을 찾고
+        q.setSubject("수정된 제목"); // 가져온 1번 게시물의 제목을 수정하고
+        questionRepository.save(q); // 저장한다.
+
+        q = questionRepository.findById(1).get();
+        assertThat(q.getSubject()).isEqualTo("수정된 제목"); // 수정이 잘 동작했는지 확인
+
+    }
+
+    @Test
+    void 삭제() {  // 테스트 코드 실행전 무조건 BeforeEach가 실행되기에 questionRepository.count() 은 무조건 2개다.
         assertThat(questionRepository.count()).isEqualTo(lastSampleDataId); // 전체 게시물의 수를 센다. 그게 마지막 아이디와 같은지
 
         Question q = questionRepository.findById(1).get(); // 위의 코드 특성상 일관성을 믿고 1번 게시물은 무조건 존재하겠구나
         questionRepository.delete(q); // 위에서 가져왔으니까 리포지토리에서 삭제 -> 질문의 개수가 1개 줄어든다.
 
-        assertEquals(1, questionRepository.count()); // 질문의 개수가 1개 줄어든다.
+        assertThat(questionRepository.count()).isEqualTo(lastSampleDataId - 1); // 삭제 후 샘플 데이터는 게시물의 개수가 줄어들기에 1개 적다.
+    }
+
+    @Test
+    void findAll() {
+        // findAll() : SELECT * FROM question;
+        List<Question> all = questionRepository.findAll();
+        assertThat(all.size()).isEqualTo(lastSampleDataId); // 리스트의 크기 확인
+
+        Question q = all.get(0); // 첫번째 게시글의 제목 값 확인
+        assertThat(q.getSubject()).isEqualTo("sbb가 무엇인가요?"); // 테스트 실행 전 BeforeEach 가 먼저 실행되어 데이터 리셋 되기에 수정 전으로 돌아가 초기 데이터 상대라 참이다.
+    }
+
+    @Test
+    void findBySubject() { // 쿼리문에서 where 뒤에 조건에 "sbb가 무엇인가요?" 넣는 것과 같다. JPA 가 해준다. (내용 자체를 객체에 리턴)
+        Question q = questionRepository.findBySubject("sbb가 무엇인가요?");
+        assertThat(q.getId()).isEqualTo(1);
+    }
+    // 쿼리문의 where 절에 조건에 대해서
+    @Test // findBySubjectAndContent (여러 칼럼을 AND 로 검색), findBySubjectOrContent (여러 칼럼을 OR로 검색)
+    void findBySubjectAndContent() { // 쿼리문에서 where 뒤에 조건에 "sbb가 무엇인가요?" 넣는 것과 같다. JPA 가 해준다. (내용 자체를 객체에 리턴)
+        Question q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.");
+        assertThat(q.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void findBySubjectLike() {
+        List<Question> qList = questionRepository.findBySubjectLike("sbb%"); // sbb로 시작하는 애들 다 가져와
+        Question q = qList.get(0); // sbb 로 시작하는 애들 중에  중 첫번 쨰
+
+        assertThat(q.getSubject()).isEqualTo("sbb가 무엇인가요?");
     }
 
     /*
