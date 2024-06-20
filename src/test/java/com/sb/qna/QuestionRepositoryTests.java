@@ -14,8 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class QuestionRepositoryTests {
 
     @Autowired
-    private QuestionRepository questionRepository;
+    private QuestionRepository questionRepository; // 아래에서 이 변수를 사용하는 메서드가 static 이기에 변수도 static 붙히는게 좋지만 관례를 보기 위해 static 안함
     private static int lastSampleDataId; // 마지막 테스트 데이터 id 가져오기 위해
+
 
     @Test
     void contextLoads() {
@@ -27,13 +28,22 @@ public class QuestionRepositoryTests {
         createSampleData(); // 매번 샘플 데이터를 만든다.
     }
 
+    // @BeforeEach 안에서 질문 리셋 할 수 있도록
     private void clearData() {
         questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
         questionRepository.truncate(); // truncate 를 활용해 데이터 삭제해준다.
         questionRepository.enableForeignKeyChecks(); // 외래키 활성화
     }
 
-    private void createSampleData() {  // 1, 2번 게시물 생성
+    // 외부에서 호출 (밖에서 사용할 수 있게 public) (질문 리셋)
+    public static void clearData(QuestionRepository questionRepository) { // 변수 questionRepository가 static 아니기에 직접 매개변수로 전달
+        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
+        questionRepository.truncate(); // truncate 를 활용해 데이터 삭제해준다.
+        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
+    }
+
+    // 외부에서 호출  (질문 2개 만들고) (샘플 데이터 2개 제작)
+    public static int createSampleData(QuestionRepository questionRepository) {  // 1, 2번 게시물 생성
         Question q1 = new Question();
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
@@ -46,7 +56,12 @@ public class QuestionRepositoryTests {
         q2.setCreateDate(LocalDateTime.now());
         questionRepository.save(q2);  // 두번째 질문 저장
 
-        lastSampleDataId = q2.getId(); // 2개에 대해서 id를 담고 있기에 항상 2개이다.
+        return q2.getId(); // 2개에 대해서 id를 담고 있기에 항상 2개이다.
+    }
+
+    // BeforeEach 내부에서 활용
+    public void createSampleData() {  // 1, 2번 게시물 생성
+        lastSampleDataId = createSampleData(questionRepository); // 2개에 대해서 id를 담고 있기에 항상 2개이다.
     }
 
     @Test

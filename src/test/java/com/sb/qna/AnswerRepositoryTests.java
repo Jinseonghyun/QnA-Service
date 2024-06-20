@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
-@SpringBootTest
+@SpringBootTest // 질문도 리셋 됐다가 답변도 같이 만들어 준다. (질문, 답벼 동시에 만들어줌)
 public class AnswerRepositoryTests {
 
     @Autowired
@@ -24,28 +24,17 @@ public class AnswerRepositoryTests {
         createSampleData(); // 매번 샘플 데이터를 만든다.
     }
 
-    private void clearData() {
+    private void clearData() { // 객체화 하지 않고 메서드 사용하려면 clearData 가 static으로 설정되야함
+        QuestionRepositoryTests.clearData(questionRepository); // 질문 삭제 후 재 생성 할 때 번호가 1번부터 시작할 수 있게 questionRepository 도 삭제
+
         questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
-        questionRepository.truncate();; // 질문 삭제 후 재 생성 할 때 번호가 1번부터 시작할 수 있게 questionRepository 도 삭제
         answerRepository.truncate(); // questionRepository.truncate() 이렇게 해버리면 답변이 질문을 삭제한다 -> (질문이 없는 상태가 됨)
         questionRepository.enableForeignKeyChecks(); // 외래키 활성화
     }
 
     private void createSampleData() {
         // question 을 만든다.
-        Question q1 = new Question();
-        q1.setSubject("sbb가 무엇인가요?");
-        q1.setContent("sbb에 대해서 알고 싶습니다.");
-        q1.setCreateDate(LocalDateTime.now());
-        questionRepository.save(q1);  // 첫번째 질문 저장
-
-        Question q2 = new Question();
-        q2.setSubject("스프링부트 모델 질문입니다.");
-        q2.setContent("id는 자동으로 생성되나요?");
-        q2.setCreateDate(LocalDateTime.now());
-        questionRepository.save(q2);  // 두번째 질문 저장
-
-        lastSampleDataId = q2.getId(); // 2개에 대해서 id를 담고 있기에 항상 2개이다.
+        QuestionRepositoryTests.createSampleData(questionRepository); // 객체화 하지 않고 메서드 사용하려면 createSapleData 가 static으로 설정되야함
     }
 
     @Test
