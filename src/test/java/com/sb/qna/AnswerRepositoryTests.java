@@ -27,9 +27,9 @@ public class AnswerRepositoryTests {
     private void clearData() { // 객체화 하지 않고 메서드 사용하려면 clearData 가 static으로 설정되야함
         QuestionRepositoryTests.clearData(questionRepository); // 질문 삭제 후 재 생성 할 때 번호가 1번부터 시작할 수 있게 questionRepository 도 삭제
 
-        questionRepository.disableForeignKeyChecks(); // 외래키 비활성화
+        answerRepository.disableForeignKeyChecks(); // questionRepository.disableForeignKeyChecks 질문에는 외래키가 없다. 키외래키 비활성화
         answerRepository.truncate(); // questionRepository.truncate() 이렇게 해버리면 답변이 질문을 삭제한다 -> (질문이 없는 상태가 됨)
-        questionRepository.enableForeignKeyChecks(); // 외래키 활성화
+        answerRepository.enableForeignKeyChecks(); // questionRepository.enableForeignKeyChecks() 질문에는 외래키가 없다.  외래키 활성화
     }
 
     private void createSampleData() {
