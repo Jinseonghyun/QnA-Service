@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -75,10 +76,25 @@ public class AnswerRepositoryTests {
     }
 
     @Test
+    // 답변을 통해서 질문을 조회 (답변입장에서는 질문이 1개다 즉 단수)
     void 관련된_question_조회() {
         Answer a = answerRepository.findById(1).get(); // 1번 답변 가져와 -> (실제는 답변과 답변에 연관되어 있는 질문까지 가져온다.)
         Question q = a.getQuestion(); // 진짜 질문도 확실하게 가져오도록
-        
+
         assertThat(q.getId()).isEqualTo(1);
+    }
+
+    @Test  // 질문 입장에서는 답변이 복수 
+        // 하나의 질문에 여러개의 답변이 달릴 수 있다. (답변 조회)
+    void question으로부터_관련된_답변들_조회() {
+        // SELECT * FROM question WHERE id = 1;
+        Question q = questionRepository.findById(1).get(); // 1번 질문을 조회 (데이터의 어떤 특정 쿼리 날림)
+
+        // SELECT * FROM answer WHERE question_id = 1;
+        List<Answer> answerList = q.getAnswerList(); // 질문에 해당하는 답변들을 담는다. (DB 연결이 끊김 -> Answer 타입을 EAGER로 바꾸어준다.)
+
+        assertThat(answerList.size()).isEqualTo(2); // 1번 질문에 답변이 2개
+        assertThat(answerList.get(0).getContent()).isEqualTo("sbb는 질문답변 게시판입니다."); // 1번 질문이 대한 0번째 답변이 제대로 맞는지 확인
+
     }
 }
