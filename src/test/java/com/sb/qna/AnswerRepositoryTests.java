@@ -70,8 +70,15 @@ public class AnswerRepositoryTests {
 
     @Test
     void 조회() {
-        Answer a = answerRepository.findById(1).get();
-
+        Answer a = answerRepository.findById(1).get(); // 1번 답변 가져와 -> (실제는 답변과 답변에 연관되어 있는 질문까지 가져온다.)
         assertThat(a.getContent()).isEqualTo("sbb는 질문답변 게시판입니다.");
+    }
+
+    @Test
+    void 관련된_question_조회() {
+        Answer a = answerRepository.findById(1).get(); // 1번 답변 가져와 -> (실제는 답변과 답변에 연관되어 있는 질문까지 가져온다.)
+        Question q = a.getQuestion(); // 진짜 질문도 확실하게 가져오도록
+        
+        assertThat(q.getId()).isEqualTo(1);
     }
 }
