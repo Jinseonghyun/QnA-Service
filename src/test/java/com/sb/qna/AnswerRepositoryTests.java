@@ -47,11 +47,15 @@ public class AnswerRepositoryTests {
         a1.setCreatedate(LocalDateTime.now());
         answerRepository.save(a1);
 
+        q.getAnswerList().add(a1); // 질문 1번 가져오기
+
         Answer a2 = new Answer();
         a2.setContent("sbb에서는 주로 스프링관련 내용을 다룹니다.");
         a2.setQuestion(q); // 어떤 질문의 답변인지 알기 위해서 Question 객체가 필요하다.
         a2.setCreatedate(LocalDateTime.now());
         answerRepository.save(a2);
+
+        q.getAnswerList().add(a2); // 질문 2번 가져오기
     }
 
     @Test

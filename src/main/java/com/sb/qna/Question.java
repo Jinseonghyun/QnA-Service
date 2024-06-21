@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -27,5 +28,5 @@ public class Question {
 
     // 하나의 질문에 여러개 답변                             // , fetch = FetchType.EAGER (타입을 강제적으로 LAZY 에서 EAGER로 바꿔준다. (지연로딩 -> 즉시 로딩))
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) // cascade 이용해서 질문이 지워지면 아래에 답변도 다 지워지도록
-    private List<Answer> answerList; // 위의 cascade 때문에 answerList가 안생김  (빈 리스트가 들어간다.)
+    private List<Answer> answerList = new ArrayList<>(); // 위의 cascade 때문에 answerList가 안생김  (빈 리스트가 들어간다.)
 }
