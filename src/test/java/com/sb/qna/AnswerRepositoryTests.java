@@ -90,9 +90,13 @@ public class AnswerRepositoryTests {
     @Transactional // 아래가 한 묶음임을 인지시켜주고 데이터에서 타입변경을 안해줘도 됨
     @Rollback(false) // DB 안끊기게 연결 유지 될 수 있도록 그 값은 남는다.
     void question으로부터_관련된_답변들_조회() { // 하나의 질문에 여러개의 답변이 달릴 수 있다. (답변 조회)
+        // 동일 트래젝션 내에서 동일 객체가 반환됨
+
         // SELECT * FROM question WHERE id = 1;
         Question q = questionRepository.findById(1).get(); // 1번 질문을 조회 (데이터의 어떤 특정 쿼리 날림)
+        q = questionRepository.findById(1).get(); // 질문 찾는 쿼리 날라감
 
+        System.out.println("q 2nd : " + q); // 객체 주소 반환
         // (실제 환경이 아닌 test환경이라 DB 연결이 끊김 -> Answer 타입을 EAGER로 바꾸어준다. -> @Transactional 으로 해결)
         // SELECT * FROM answer WHERE question_id = 1;
 
