@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,14 +86,17 @@ public class AnswerRepositoryTests {
         assertThat(q.getId()).isEqualTo(1);
     }
 
-    @Test  // 질문 입장에서는 답변이 복수 
-        // 하나의 질문에 여러개의 답변이 달릴 수 있다. (답변 조회)
-    void question으로부터_관련된_답변들_조회() {
+    @Test  // 질문 입장에서는 답변이 복수
+    @Transactional // 아래가 한 묶음임을 인지시켜주고 데이터에서 타입변경을 안해줘도 됨
+    @Rollback(false) // DB 안끊기게 연결 유지 될 수 있도록 그 값은 남는다.
+    void question으로부터_관련된_답변들_조회() { // 하나의 질문에 여러개의 답변이 달릴 수 있다. (답변 조회)
         // SELECT * FROM question WHERE id = 1;
         Question q = questionRepository.findById(1).get(); // 1번 질문을 조회 (데이터의 어떤 특정 쿼리 날림)
 
+        // (실제 환경이 아닌 test환경이라 DB 연결이 끊김 -> Answer 타입을 EAGER로 바꾸어준다. -> @Transactional 으로 해결)
         // SELECT * FROM answer WHERE question_id = 1;
-        List<Answer> answerList = q.getAnswerList(); // 질문에 해당하는 답변들을 담는다. (DB 연결이 끊김 -> Answer 타입을 EAGER로 바꾸어준다.)
+
+        List<Answer> answerList = q.getAnswerList(); // 질문에 해당하는 답변들을 담는다.
 
         assertThat(answerList.size()).isEqualTo(2); // 1번 질문에 답변이 2개
         assertThat(answerList.get(0).getContent()).isEqualTo("sbb는 질문답변 게시판입니다."); // 1번 질문이 대한 0번째 답변이 제대로 맞는지 확인
